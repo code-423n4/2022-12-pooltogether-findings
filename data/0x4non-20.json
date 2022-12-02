@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "0x4non",
+  "risk": "2",
+  "title": "Function `setExecutor` is too open, malicious user could DOS the contract via frontrun",
+  "issueId": 20,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/20"
+}
