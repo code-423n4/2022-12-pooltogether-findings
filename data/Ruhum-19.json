@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Ruhum",
+  "risk": "2",
+  "title": "ETH sent to existing relayer contracts will be locked up indefinitely ",
+  "issueId": 19,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/19"
+}
