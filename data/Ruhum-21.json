@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Ruhum",
+  "risk": "3",
+  "title": "Relayed calls in EthereumToArbitrumRelayer can be replayed",
+  "issueId": 21,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/21"
+}
