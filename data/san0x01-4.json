@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "san0x01",
+  "risk": "3",
+  "title": "Reentranxcy in executeCalls()",
+  "issueId": 4,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/4"
+}
