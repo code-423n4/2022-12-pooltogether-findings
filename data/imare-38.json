@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "imare",
+  "risk": "2",
+  "title": "Arbitrum relay function ``processCalls`` can be indefinitely called ",
+  "issueId": 38,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/38"
+}
