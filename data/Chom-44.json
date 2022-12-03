@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Chom",
+  "risk": "2",
+  "title": "Relayer may not work if L2 chains have changed their maximum free gas limit since maxGasLimit can't be changed",
+  "issueId": 44,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/44"
+}
