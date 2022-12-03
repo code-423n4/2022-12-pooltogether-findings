@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "cryptonue",
+  "risk": "2",
+  "title": "Immutable `maxGasLimit` will limit the calls, need to adapt for changes in max gas limit on destination chain ",
+  "issueId": 53,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/53"
+}
