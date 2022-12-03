@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "btk",
+  "risk": "3",
+  "title": "DoS on relayCalls when the nonce reach the max uint256 value",
+  "issueId": 56,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/56"
+}
