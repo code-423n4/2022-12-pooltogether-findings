@@ -1,4 +1,4 @@
-# USE UNCHECKED BLOCK FOR NONCE INCREMENT (3 INSTANCES)
+# [G-01] USE UNCHECKED BLOCK FOR NONCE INCREMENT (3 INSTANCES)
 
 src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol: [78](https://github.com/pooltogether/ERC5164/blob/main/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L78)
 src/ethereum-optimism/EthereumToOptimismRelayer.sol: [60](https://github.com/pooltogether/ERC5164/blob/main/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L60)
@@ -61,7 +61,7 @@ unchecked {
 | Function Name                                                                       | min             | avg   | median | max   | # calls |
 | relayCalls                                                                          | 547             | 29461 | 29461  | 58376 | 2       |
 
-# USE UNCHECKED BLOCK WHEN INCREMENT IN FOR LOOP (1 INSTANCE)
+# [G-02] USE ```unchecked``` BLOCK WHEN INCREMENT ```index``` IN FOR LOOP (1 INSTANCE)
 
 src/libraries/CallLib.so: [61](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/libraries/CallLib.sol#L61)
 
