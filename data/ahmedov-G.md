@@ -67,22 +67,29 @@ src/libraries/CallLib.so: [61](https://github.com/pooltogether/ERC5164/blob/5647
 
 ## Suggest
 
-```code
-for (uint256 _callIndex; _callIndex < _callsLength;) {
-      Call memory _call = _calls[_callIndex];
+```diff
+diff --git a/src/libraries/CallLib.sol b/src/libraries/CallLib.sol
+index 18d8cdc..ca1435f 100644
+--- a/src/libraries/CallLib.sol
++++ b/src/libraries/CallLib.sol
+@@ -58,7 +58,7 @@ library CallLib {
+ 
+     uint256 _callsLength = _calls.length;
+ 
+-    for (uint256 _callIndex; _callIndex < _callsLength; _callIndex++) {
++    for (uint256 _callIndex; _callIndex < _callsLength;) {
+       Call memory _call = _calls[_callIndex];
+ 
+       (bool _success, bytes memory _returnData) = _call.target.call(
 
-      (bool _success, bytes memory _returnData) = _call.target.call(
-        abi.encodePacked(_call.data, _nonce, _sender)
-      );
-
-      if (!_success) {
-        revert CallFailure(_callIndex, _returnData);
-      }
-
-      unchecked {
-        _callIndex++;
-      }
-}
+       if (!_success) {
+         revert CallFailure(_callIndex, _returnData);
+       }
++
++      unchecked { ++_callIndex; }
+     }
+   }
+ }
 ```
 
 ## Gas reports before change
