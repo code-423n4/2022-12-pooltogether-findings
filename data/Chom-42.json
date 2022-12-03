@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Chom",
+  "risk": "2",
+  "title": "You must pay for relayer gas fee if optimism have changed free gas limit but gas payment system is not implemented",
+  "issueId": 42,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/42"
+}
