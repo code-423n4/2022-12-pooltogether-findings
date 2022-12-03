@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "cryptonue",
+  "risk": "2",
+  "title": "`relayCalls` payable function can lock ETH in the contract if `msg.value` is not 0",
+  "issueId": 54,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/54"
+}
