@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Haruxe",
+  "risk": "3",
+  "title": "`setExecutor()` and `setRelayer()` Can Be Back-Run If User Knows Deployer's Address",
+  "issueId": 57,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/57"
+}
