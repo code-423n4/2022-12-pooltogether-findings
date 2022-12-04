@@ -12,3 +12,11 @@ for (uint256 _callIndex; _callIndex < _callsLength; _callIndex++) {
     }
   }
 ```
+
+G2. https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L64
+This function is called only once and can be inlined to save gas.
+
+G3. https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L159
+The body of ``_getTxHash`` can be used to replace this line to save gas. Unnecessary wrapping.
+
+
