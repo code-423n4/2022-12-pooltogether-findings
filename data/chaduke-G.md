@@ -20,3 +20,8 @@ G3. https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e
 The body of ``_getTxHash`` can be used to replace this line to save gas. Unnecessary wrapping.
 
 
+G4. https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L37
+The line can be replaced by the body of ``_isAuthorized()`` to save gas. No need to implement it as a separate function, which is only one line of requirement statement. 
+
+
+
