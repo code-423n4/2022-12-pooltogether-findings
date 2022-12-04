@@ -44,3 +44,5 @@ testProcessCalls() (gas: -100 (-0.079%))
 testRelayCalls() (gas: -100 (-0.086%))
 Overall gas change: -297 (-0.168%)
 ```
+
+Note: This optimization, although similar to the c4udit report, is arguably different, as it does not focus on the difference between pre-increment or post-increment of the `nonce` variable, but rather on using only 1 SLOAD instead of 2.
