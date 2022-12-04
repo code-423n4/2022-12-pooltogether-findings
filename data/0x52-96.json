@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "0x52",
+  "risk": "2",
+  "title": "maxGasLimit is immutable in CrossChainRelayerOptimism but free gas limit on optimism can be changed",
+  "issueId": 96,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/96"
+}
