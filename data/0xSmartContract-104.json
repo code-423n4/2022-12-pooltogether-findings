@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "0xSmartContract",
+  "risk": "2",
+  "title": "Functions that define `Executor` and `Relayer` addresses do not have modifiers",
+  "issueId": 104,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/104"
+}
