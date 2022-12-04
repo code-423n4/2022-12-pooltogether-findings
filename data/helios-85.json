@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "helios",
+  "risk": "2",
+  "title": "`FxBaseChildTunnel` contract not properly validated in `CrossChainExecutorPolygon` contract",
+  "issueId": 85,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/85"
+}
