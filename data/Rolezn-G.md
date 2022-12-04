@@ -10,11 +10,14 @@
 | [GAS&#x2011;5](#GAS&#x2011;5) | Optimize names to save gas | 6 | 132 |
 | [GAS&#x2011;6](#GAS&#x2011;6) | `internal` functions only called once can be inlined to save gas | 3 | - |
 | [GAS&#x2011;7](#GAS&#x2011;7) | Setting the `constructor` to `payable` | 5 | 65 |
-| [GAS&#x2011;8](#GAS&#x2011;8) | `relayer` can be set as immutable and set in `constructor` to save gas | 2 | 4000 |
+| [GAS&#x2011;8](#GAS&#x2011;8) | `relayer` can be set as immutable and set in `constructor` to save gas | 4 | 8000 |
+| [GAS&#x2011;9](#GAS&#x2011;9) | Repeat `require` can be set as a function to save gas | 4 | - |
+
 
 Total: 24 contexts over 8 issues
 
 ## Gas Optimizations
+
 
 
 ### <a href="#Summary">[GAS&#x2011;1]</a><a name="GAS&#x2011;1"> `++i`/`i++` Should Be `unchecked{++i}`/`unchecked{i++}` When It Is Not Possible For Them To Overflow, As Is The Case When Used In For- And While-loops
@@ -98,12 +101,12 @@ memory is more optimal.
 Consider the following generic example:
 ```
 contract C {
-	function add(uint[] memory arr) external returns (uint sum) {
-		uint length = arr.length;
-		for (uint i = 0; i < arr.length; i++) {
-		    sum += arr[i];
-		}
-	}
+  function add(uint[] memory arr) external returns (uint sum) {
+    uint length = arr.length;
+    for (uint i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+  }
 }
 ```
 In the above example, the dynamic array arr has the storage location
@@ -114,12 +117,12 @@ accesses the value in memory using a mload. However, for the above
 example this is inefficient. Consider the following snippet instead:
 ```
 contract C {
-	function add(uint[] calldata arr) external returns (uint sum) {
-		uint length = arr.length;
-		for (uint i = 0; i < arr.length; i++) {
-		    sum += arr[i];
-		}
-	}
+  function add(uint[] calldata arr) external returns (uint sum) {
+    uint length = arr.length;
+    for (uint i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+  }
 }
 ```
 In the above snippet, instead of going via memory, the value is directly
@@ -143,7 +146,7 @@ Examples
 Note: The following pattern is prevalent in the codebase:
 ```
 function f(bytes memory data) external {
-	(...) = abi.decode(data, (..., types, ...));
+  (...) = abi.decode(data, (..., types, ...));
 }
 ```
 Here, changing to bytes calldata will decrease the gas. The total
@@ -299,10 +302,26 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 Current implementation of the relayer sets its value via the `setRelayer` function.
 The value of the `relayer` can be set in the constructor and also set it as an `immutable` since the value of `relayer` cannot change once it has been set due to the `require(address(relayer) == address(0), "Executor/relayer-already-set");` statement.
 
+The same idea applies for `setExecutor` function
+
 #### <ins>Proof Of Concept</ins>
 
+```solidity
+ICrossChainRelayer public relayer;
+...
+  function setRelayer(ICrossChainRelayer _relayer) external {
+    require(address(relayer) == address(0), "Executor/relayer-already-set");
+    relayer = _relayer;
+  }
+```
+
 https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol
+
 https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol
 
 #### <ins>Recommended Mitigation Steps</ins>
 
@@ -321,4 +340,44 @@ constructor(ICrossDomainMessenger _crossDomainMessenger, ICrossChainRelayer _rel
     require(address(relayer) == address(0), "Executor/relayer-already-set");
     relayer = _relayer;
   }
+```
+
+### <a href="#Summary">[GAS&#x2011;9]</a><a name="GAS&#x2011;9"> Repeat `require` can be set as a function to save gas
+
+The following `require` statement repeat and can be set as a function the `CallLib.sol` since they import the library already.
+
+#### <ins>Proof Of Concept</ins>
+
+```solidity
+53: require(address(relayer) == address(0), "Executor/relayer-already-set");
+```
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L53
+
+```solidity
+140: require(address(executor) == address(0), "Relayer/executor-already-set");
+```
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L140
+
+```solidity
+67: require(address(relayer) == address(0), "Executor/relayer-already-set");
+```
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L67
+
+```solidity
+86: require(address(executor) == address(0), "Relayer/executor-already-set");
+```
+
+https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L86
+
+
+#### <ins>Recommended Mitigation Steps</ins>
+
+Add a function for the repeat `require` statements in the `CallLib.sol` library and call it instead.
+
+```solidity
+function checkAddressZero(address _address):
+  require(address(_address) == address(0), "Relayer/executor-already-set")
 ```
