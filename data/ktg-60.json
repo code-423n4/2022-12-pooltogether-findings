@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "ktg",
+  "risk": "2",
+  "title": "An attacker can make users unable to cancel their L1 calls on Ethereum To Arbitrum",
+  "issueId": 60,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/60"
+}
