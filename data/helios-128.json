@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "helios",
+  "risk": "2",
+  "title": "Incorrect gas limit check",
+  "issueId": 128,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/128"
+}
