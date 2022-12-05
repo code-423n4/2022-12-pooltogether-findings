@@ -1,0 +1,1 @@
+In `CrossChainRelayer` contracts there should be a way to query current `nonce` value. The `nonce` is declared as `internal`, a public getter function can be implemented to read the `nonce` parameter.
