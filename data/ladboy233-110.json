@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "ladboy233",
+  "risk": "2",
+  "title": "User can set low gas limit to make sure the transaction is ensured to be reverted when making cross-chain request via the relayer",
+  "issueId": 110,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/110"
+}
