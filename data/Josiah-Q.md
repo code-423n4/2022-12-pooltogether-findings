@@ -147,3 +147,28 @@ Here are the 3 instances found.
 ```
     require(_maxGasLimit > 0, "Relayer/max-gas-limit-gt-zero");
 ```
+## MISSING EVENTS ON CRITICAL OPERATIONS
+Several critical operations do not trigger events, which will make it difficult to review the correct behavior of the contracts once deployed. Users and blockchain monitoring systems will not be able to easily detect suspicious behaviors without events. 
+
+Here are the 4 instances found.
+
+[EthereumToArbitrumRelayer.sol#L139](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L139)
+
+```
+  function setExecutor(ICrossChainExecutor _executor) external {
+```
+[EthereumToArbitrumExecutor.sol#L52](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L52)
+
+```
+  function setRelayer(ICrossChainRelayer _relayer) external {
+```
+[EthereumToOptimismRelayer.sol#L85](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L85)
+
+```
+  function setExecutor(ICrossChainExecutor _executor) external {
+```
+[EthereumToOptimismExecutor.sol#L66](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L66)
+
+```
+  function setRelayer(ICrossChainRelayer _relayer) external {
+```
