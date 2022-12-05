@@ -13,6 +13,21 @@ https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a9
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L66
 
 
+## SETTING OF PRIVILEGED ROLE SHOULD BE A TWO STEP PROCESS
+
+### Description:
+
+The setter function where we are assigning roles the executor and relay roles should be converted to a 2 step process , so that in a scenario
+while setting the role if by mistake the owner sets the wrong address or some invalid address , instead of redeploying the whole contract we can
+set the `tempExecutor`(example) and then the `tempExecutor` accepts his/her role and then we assign the tempExecutor as the executor.
+
+Convert these function into a 2-step process - 
+
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L139
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L52
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L85
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L66
+
 ## ZERO-ADDRESS CHECKS ARE MISSING
 
 ### Description:
