@@ -40,3 +40,29 @@ Here are the instances entailed:
 ```
 
 no test for EthereumToOptimismExecutor.sol
+
+## Unchecked SafeMath Saves Gas
+"Checked" math, which is default in ^0.8.0 is not free. The compiler will add some overflow checks, somehow similar to those implemented by `SafeMath`. While it is reasonable to expect these checks to be less expensive than the current `SafeMath`, one should keep in mind that these checks will increase the cost of "basic math operation" that were not previously covered. This particularly concerns variable increments in for loops.
+
+When no arithmetic overflow/underflow is going to happen, `unchecked { _callIndex++ ;}` in the code block to use the previous wrapping behavior further saves gas just as in the for loop below as an example:
+
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/libraries/CallLib.sol#L61-L71
+
+```
+    for (uint256 _callIndex; _callIndex < _callsLength;) {
+      Call memory _call = _calls[_callIndex];
+
+      (bool _success, bytes memory _returnData) = _call.target.call(
+        abi.encodePacked(_call.data, _nonce, _sender)
+      );
+
+      if (!_success) {
+        revert CallFailure(_callIndex, _returnData);
+      }
+
+      unchecked {
+          _callIndex++;
+      }
+    }
+```
+no test for CallLib.sol
