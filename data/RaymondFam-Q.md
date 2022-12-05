@@ -79,3 +79,7 @@ https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a9
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L47-L55
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L80-L88
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L61-L69
+
+## `_gasLimit` of `relayCalls()`
+Consider setting a lower boundary for `_gasLimit` of `relayCalls()`, and where possible, make it such that `_gasLimit == _maxGasLimit` since any excess ETH can be refunded after the call has been successfully relayed and executed. This is to ensure adequate amount of gas is always there for bridging such as in the case of the Ethereum to Arbitrum bridge when there is a need submitting/redeeming a retryable. 
+ 
