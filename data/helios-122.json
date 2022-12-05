@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "helios",
+  "risk": "2",
+  "title": "Function _processMessageFromRoot does not validate _stateId parameter",
+  "issueId": 122,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/122"
+}
