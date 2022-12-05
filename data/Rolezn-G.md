@@ -5,16 +5,14 @@
 |-|:-|:-|:-:|
 | [GAS&#x2011;1](#GAS&#x2011;1) | `++i`/`i++` Should Be `unchecked{++i}`/`unchecked{i++}` When It Is Not Possible For Them To Overflow, As Is The Case When Used In For- And While-loops | 1 | 35 |
 | [GAS&#x2011;2](#GAS&#x2011;2) | `require()`/`revert()` Strings Longer Than 32 Bytes Cost Extra Gas | 4 | - |
-| [GAS&#x2011;3](#GAS&#x2011;3) | `abi.encode()` is less efficient than `abi.encodepacked()` | 2 | 200 |
-| [GAS&#x2011;4](#GAS&#x2011;4) | Use calldata instead of memory for function parameters | 1 | 300 |
-| [GAS&#x2011;5](#GAS&#x2011;5) | Optimize names to save gas | 6 | 132 |
-| [GAS&#x2011;6](#GAS&#x2011;6) | `internal` functions only called once can be inlined to save gas | 3 | - |
-| [GAS&#x2011;7](#GAS&#x2011;7) | Setting the `constructor` to `payable` | 5 | 65 |
-| [GAS&#x2011;8](#GAS&#x2011;8) | `relayer` can be set as immutable and set in `constructor` to save gas | 4 | 8000 |
-| [GAS&#x2011;9](#GAS&#x2011;9) | Repeat `require` can be set as a function to save gas | 4 | - |
+| [GAS&#x2011;3](#GAS&#x2011;3) | Optimize names to save gas | 6 | 132 |
+| [GAS&#x2011;4](#GAS&#x2011;4) | `internal` functions only called once can be inlined to save gas | 3 | - |
+| [GAS&#x2011;5](#GAS&#x2011;5) | Setting the `constructor` to `payable` | 5 | 65 |
+| [GAS&#x2011;6](#GAS&#x2011;6) | `relayer` can be set as immutable and set in `constructor` to save gas | 4 | 8000 |
+| [GAS&#x2011;7](#GAS&#x2011;7) | Repeat `require` can be set as a function to save gas | 4 | - |
 
 
-Total: 24 contexts over 8 issues
+Total: 27 contexts over 7 issues
 
 ## Gas Optimizations
 
@@ -70,109 +68,7 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 
 
 
-### <a href="#Summary">[GAS&#x2011;3]</a><a name="GAS&#x2011;3"> `abi.encode()` is less efficient than `abi.encodepacked()`
-
-See for more information: https://github.com/ConnorBlockchain/Solidity-Encode-Gas-Comparison 
-
-#### <ins>Proof Of Concept</ins>
-
-
-```solidity
-179: return keccak256(abi.encode(address(this), _nonce, _calls, _sender, _gasLimit));
-```
-
-https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L179
-
-```solidity
-60: _sendMessageToChild(abi.encode(_nonce, msg.sender, _calls));
-```
-
-https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonRelayer.sol#L60
-
-
-
-
-
-### <a href="#Summary">[GAS&#x2011;4]</a><a name="GAS&#x2011;4"> Use calldata instead of memory for function parameters
-
-In some cases, having function arguments in calldata instead of
-memory is more optimal.
-
-Consider the following generic example:
-```
-contract C {
-  function add(uint[] memory arr) external returns (uint sum) {
-    uint length = arr.length;
-    for (uint i = 0; i < arr.length; i++) {
-        sum += arr[i];
-    }
-  }
-}
-```
-In the above example, the dynamic array arr has the storage location
-memory. When the function gets called externally, the array values are
-kept in calldata and copied to memory during ABI decoding (using the
-opcode calldataload and mstore). And during the for loop, arr[i]
-accesses the value in memory using a mload. However, for the above
-example this is inefficient. Consider the following snippet instead:
-```
-contract C {
-  function add(uint[] calldata arr) external returns (uint sum) {
-    uint length = arr.length;
-    for (uint i = 0; i < arr.length; i++) {
-        sum += arr[i];
-    }
-  }
-}
-```
-In the above snippet, instead of going via memory, the value is directly
-read from calldata using calldataload. That is, there are no
-intermediate memory operations that carries this value.
-
-Gas savings: In the former example, the ABI decoding begins with
-copying value from calldata to memory in a for loop. Each iteration
-would cost at least 60 gas. In the latter example, this can be
-completely avoided. This will also reduce the number of instructions and
-therefore reduces the deploy time cost of the contract.
-
-In short, use calldata instead of memory if the function argument
-is only read.
-
-Note that in older Solidity versions, changing some function arguments
-from memory to calldata may cause "unimplemented feature error".
-This can be avoided by using a newer (0.8.*) Solidity compiler.
-
-Examples
-Note: The following pattern is prevalent in the codebase:
-```
-function f(bytes memory data) external {
-  (...) = abi.decode(data, (..., types, ...));
-}
-```
-Here, changing to bytes calldata will decrease the gas. The total
-savings for this change across all such uses would be quite
-significant.
-
-#### <ins>Proof Of Concept</ins>
-
-
-```solidity
-function executeCalls(
-    uint256 _nonce,
-    address _sender,
-    Call[] memory _calls,
-    bool _executedNonce
-  ) internal {
-```
-
-https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/libraries/CallLib.sol#L49
-
-
-
-
-
-
-### <a href="#Summary">[GAS&#x2011;5]</a><a name="GAS&#x2011;5"> Optimize names to save gas
+### <a href="#Summary">[GAS&#x2011;3]</a><a name="GAS&#x2011;3"> Optimize names to save gas
 
 Contracts most called functions could simply save gas by function ordering via Method ID. Calling a function at runtime will be cheaper if the function is positioned earlier in the order (has a relatively lower Method ID) because 22 gas are added to the cost of a function for every position that came before it. The caller can save on gas if you prioritize most called functions. 
 
@@ -225,7 +121,7 @@ For example, the function IDs in the Gauge.sol contract will be the most used; A
 
 
 
-### <a href="#Summary">[GAS&#x2011;6]</a><a name="GAS&#x2011;6"> `internal` functions only called once can be inlined to save gas
+### <a href="#Summary">[GAS&#x2011;4]</a><a name="GAS&#x2011;4"> `internal` functions only called once can be inlined to save gas
 
 #### <ins>Proof Of Concept</ins>
 
@@ -243,20 +139,11 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 
 https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L77
 
-```solidity
-44: function _processMessageFromRoot
-
-```
-
-https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonExecutor.sol#L44
 
 
 
 
-
-
-
-### <a href="#Summary">[GAS&#x2011;7]</a><a name="GAS&#x2011;7"> Setting the `constructor` to `payable`
+### <a href="#Summary">[GAS&#x2011;5]</a><a name="GAS&#x2011;5"> Setting the `constructor` to `payable`
 
 Saves ~15 gas per instance
 
@@ -297,7 +184,7 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonRelayer.sol#L33
 
 
-### <a href="#Summary">[GAS&#x2011;8]</a><a name="GAS&#x2011;8"> `relayer` can be set as immutable and set in `constructor` to save gas
+### <a href="#Summary">[GAS&#x2011;6]</a><a name="GAS&#x2011;6"> `relayer` can be set as immutable and set in `constructor` to save gas
 
 Current implementation of the relayer sets its value via the `setRelayer` function.
 The value of the `relayer` can be set in the constructor and also set it as an `immutable` since the value of `relayer` cannot change once it has been set due to the `require(address(relayer) == address(0), "Executor/relayer-already-set");` statement.
@@ -342,7 +229,7 @@ constructor(ICrossDomainMessenger _crossDomainMessenger, ICrossChainRelayer _rel
   }
 ```
 
-### <a href="#Summary">[GAS&#x2011;9]</a><a name="GAS&#x2011;9"> Repeat `require` can be set as a function to save gas
+### <a href="#Summary">[GAS&#x2011;7]</a><a name="GAS&#x2011;7"> Repeat `require` can be set as a function to save gas
 
 The following `require` statement repeat and can be set as a function the `CallLib.sol` since they import the library already.
 
@@ -378,6 +265,216 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 Add a function for the repeat `require` statements in the `CallLib.sol` library and call it instead.
 
 ```solidity
-function checkAddressZero(address _address):
-  require(address(_address) == address(0), "Relayer/executor-already-set")
+function checkAddressZero(address _address) {
+  require(address(_address) == address(0), "Executor/relayer-already-set")
+}
+```
+
+
+#### Results comparison
+
+Original:
+
+```
+| src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol:CrossChainExecutorArbitrum contract |                 |       |        |       |         |
+|------------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                          | Deployment Size |       |        |       |         |
+| 357193                                                                                   | 1816            |       |        |       |         |
+| Function Name                                                                            | min             | avg   | median | max   | # calls |
+| executeCalls                                                                             | 820             | 20017 | 20350  | 38549 | 4       |
+| executed                                                                                 | 494             | 494   | 494    | 494   | 1       |
+| relayer                                                                                  | 326             | 326   | 326    | 326   | 1       |
+| setRelayer                                                                               | 508             | 18902 | 22581  | 22581 | 6       |
+
+
+| src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol:CrossChainRelayerArbitrum contract |                 |       |        |       |         |
+|----------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                        | Deployment Size |       |        |       |         |
+| 487494                                                                                 | 2846            |       |        |       |         |
+| Function Name                                                                          | min             | avg   | median | max   | # calls |
+| executor                                                                               | 337             | 337   | 337    | 337   | 1       |
+| getTxHash                                                                              | 1786            | 1786  | 1786   | 1786  | 4       |
+| inbox                                                                                  | 282             | 282   | 282    | 282   | 1       |
+| maxGasLimit                                                                            | 251             | 251   | 251    | 251   | 1       |
+| processCalls                                                                           | 4034            | 6039  | 6039   | 8044  | 2       |
+| relayCalls                                                                             | 561             | 34385 | 51298  | 51298 | 3       |
+| relayed                                                                                | 495             | 1495  | 1495   | 2495  | 2       |
+| setExecutor                                                                            | 564             | 19474 | 22626  | 22626 | 7       |
+
+
+| src/ethereum-optimism/EthereumToOptimismExecutor.sol:CrossChainExecutorOptimism contract |                 |       |        |       |         |
+|------------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                          | Deployment Size |       |        |       |         |
+| 401508                                                                                   | 2271            |       |        |       |         |
+| Function Name                                                                            | min             | avg   | median | max   | # calls |
+| crossDomainMessenger                                                                     | 271             | 271   | 271    | 271   | 1       |
+| executeCalls                                                                             | 837             | 837   | 837    | 837   | 1       |
+| relayer                                                                                  | 326             | 326   | 326    | 326   | 1       |
+| setRelayer                                                                               | 22581           | 22581 | 22581  | 22581 | 6       |
+
+
+| src/ethereum-optimism/EthereumToOptimismRelayer.sol:CrossChainRelayerOptimism contract |                 |       |        |       |         |
+|----------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                        | Deployment Size |       |        |       |         |
+| 305313                                                                                 | 1935            |       |        |       |         |
+| Function Name                                                                          | min             | avg   | median | max   | # calls |
+| crossDomainMessenger                                                                   | 282             | 282   | 282    | 282   | 1       |
+| executor                                                                               | 381             | 381   | 381    | 381   | 1       |
+| relayCalls                                                                             | 490             | 14141 | 14141  | 27792 | 2       |
+| setExecutor                                                                            | 22603           | 22603 | 22603  | 22603 | 6       |
+
+
+| src/ethereum-polygon/EthereumToPolygonExecutor.sol:CrossChainExecutorPolygon contract |                 |       |        |       |         |
+|---------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                       | Deployment Size |       |        |       |         |
+| 447010                                                                                | 2300            |       |        |       |         |
+| Function Name                                                                         | min             | avg   | median | max   | # calls |
+| fxChild                                                                               | 304             | 304   | 304    | 304   | 1       |
+| fxRootTunnel                                                                          | 326             | 326   | 326    | 326   | 1       |
+| processMessageFromRoot                                                                | 26868           | 29573 | 29573  | 32279 | 2       |
+| setFxRootTunnel                                                                       | 22625           | 22625 | 22625  | 22625 | 3       |
+
+
+| src/ethereum-polygon/EthereumToPolygonRelayer.sol:CrossChainRelayerPolygon contract |                 |       |        |       |         |
+|-------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                     | Deployment Size |       |        |       |         |
+| 1668015                                                                             | 8526            |       |        |       |         |
+| Function Name                                                                       | min             | avg   | median | max   | # calls |
+| checkpointManager                                                                   | 381             | 381   | 381    | 381   | 1       |
+| fxChildTunnel                                                                       | 337             | 337   | 337    | 337   | 1       |
+| fxRoot                                                                              | 403             | 403   | 403    | 403   | 1       |
+| maxGasLimit                                                                         | 229             | 229   | 229    | 229   | 1       |
+| relayCalls                                                                          | 547             | 15110 | 15110  | 29674 | 2       |
+| setFxChildTunnel                                                                    | 22625           | 22625 | 22625  | 22625 | 3       |
+
+
+| test/contracts/Greeter.sol:Greeter contract |                 |      |        |      |         |
+|---------------------------------------------|-----------------|------|--------|------|---------|
+| Deployment Cost                             | Deployment Size |      |        |      |         |
+| 343595                                      | 2513            |      |        |      |         |
+| Function Name                               | min             | avg  | median | max  | # calls |
+| greet                                       | 1261            | 1261 | 1261   | 1261 | 3       |
+| greeting                                    | 1275            | 1275 | 1275   | 1275 | 2       |
+| setGreeting                                 | 737             | 4724 | 4182   | 8982 | 5       |
+
+
+| test/contracts/mock/ArbInbox.sol:ArbInbox contract |                 |      |        |      |         |
+|----------------------------------------------------|-----------------|------|--------|------|---------|
+| Deployment Cost                                    | Deployment Size |      |        |      |         |
+| 522756                                             | 2643            |      |        |      |         |
+| Function Name                                      | min             | avg  | median | max  | # calls |
+| createRetryableTicket                              | 1169            | 1169 | 1169   | 1169 | 1       |
+| generateRandomNumber                               | 443             | 443  | 443    | 443  | 1       |
+
+
+| test/fork/EthereumToPolygonFork.t.sol:EthereumToPolygonForkTest contract |                 |     |        |     |         |
+|--------------------------------------------------------------------------|-----------------|-----|--------|-----|---------|
+| Deployment Cost                                                          | Deployment Size |     |        |     |         |
+| 6572162                                                                  | 30325           |     |        |     |         |
+| Function Name                                                            | min             | avg | median | max | # calls |
+| setGreeting                                                              | 236             | 236 | 236    | 236 | 1       |
+
+```
+
+
+After some of the gas optimzations (excluding GAS-6 as it requires significant changes in the test files):
+
+```
+| src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol:CrossChainExecutorArbitrum contract |                 |       |        |       |         |
+|------------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                          | Deployment Size |       |        |       |         |
+| 350986                                                                                   | 1785            |       |        |       |         |
+| Function Name                                                                            | min             | avg   | median | max   | # calls |
+| executeCalls                                                                             | 809             | 19970 | 20303  | 38467 | 4       |
+| executed                                                                                 | 494             | 494   | 494    | 494   | 1       |
+| relayer                                                                                  | 326             | 326   | 326    | 326   | 2       |
+| setRelayer                                                                               | 558             | 18952 | 22631  | 22631 | 6       |
+
+
+| src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol:CrossChainRelayerArbitrum contract |                 |       |        |       |         |
+|----------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                        | Deployment Size |       |        |       |         |
+| 487494                                                                                 | 2846            |       |        |       |         |
+| Function Name                                                                          | min             | avg   | median | max   | # calls |
+| executor                                                                               | 337             | 337   | 337    | 337   | 1       |
+| getTxHash                                                                              | 1786            | 1786  | 1786   | 1786  | 4       |
+| inbox                                                                                  | 282             | 282   | 282    | 282   | 1       |
+| maxGasLimit                                                                            | 251             | 251   | 251    | 251   | 1       |
+| processCalls                                                                           | 4034            | 6039  | 6039   | 8044  | 2       |
+| relayCalls                                                                             | 561             | 34385 | 51298  | 51298 | 3       |
+| relayed                                                                                | 495             | 1495  | 1495   | 2495  | 2       |
+| setExecutor                                                                            | 564             | 19474 | 22626  | 22626 | 7       |
+
+
+| src/ethereum-optimism/EthereumToOptimismExecutor.sol:CrossChainExecutorOptimism contract |                 |       |        |       |         |
+|------------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                          | Deployment Size |       |        |       |         |
+| 397899                                                                                   | 2247            |       |        |       |         |
+| Function Name                                                                            | min             | avg   | median | max   | # calls |
+| crossDomainMessenger                                                                     | 271             | 271   | 271    | 271   | 1       |
+| executeCalls                                                                             | 799             | 799   | 799    | 799   | 1       |
+| relayer                                                                                  | 326             | 326   | 326    | 326   | 1       |
+| setRelayer                                                                               | 22631           | 22631 | 22631  | 22631 | 6       |
+
+
+| src/ethereum-optimism/EthereumToOptimismRelayer.sol:CrossChainRelayerOptimism contract |                 |       |        |       |         |
+|----------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                        | Deployment Size |       |        |       |         |
+| 305313                                                                                 | 1935            |       |        |       |         |
+| Function Name                                                                          | min             | avg   | median | max   | # calls |
+| crossDomainMessenger                                                                   | 282             | 282   | 282    | 282   | 1       |
+| executor                                                                               | 381             | 381   | 381    | 381   | 1       |
+| relayCalls                                                                             | 490             | 14141 | 14141  | 27792 | 2       |
+| setExecutor                                                                            | 22603           | 22603 | 22603  | 22603 | 6       |
+
+
+| src/ethereum-polygon/EthereumToPolygonExecutor.sol:CrossChainExecutorPolygon contract |                 |       |        |       |         |
+|---------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                       | Deployment Size |       |        |       |         |
+| 436974                                                                                | 2237            |       |        |       |         |
+| Function Name                                                                         | min             | avg   | median | max   | # calls |
+| fxChild                                                                               | 304             | 304   | 304    | 304   | 1       |
+| fxRootTunnel                                                                          | 326             | 326   | 326    | 326   | 1       |
+| processMessageFromRoot                                                                | 26868           | 29538 | 29538  | 32208 | 2       |
+| setFxRootTunnel                                                                       | 22625           | 22625 | 22625  | 22625 | 3       |
+
+
+| src/ethereum-polygon/EthereumToPolygonRelayer.sol:CrossChainRelayerPolygon contract |                 |       |        |       |         |
+|-------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+| Deployment Cost                                                                     | Deployment Size |       |        |       |         |
+| 1667991                                                                             | 8512            |       |        |       |         |
+| Function Name                                                                       | min             | avg   | median | max   | # calls |
+| checkpointManager                                                                   | 381             | 381   | 381    | 381   | 1       |
+| fxChildTunnel                                                                       | 337             | 337   | 337    | 337   | 1       |
+| fxRoot                                                                              | 403             | 403   | 403    | 403   | 1       |
+| maxGasLimit                                                                         | 229             | 229   | 229    | 229   | 1       |
+| relayCalls                                                                          | 547             | 15110 | 15110  | 29674 | 2       |
+| setFxChildTunnel                                                                    | 22625           | 22625 | 22625  | 22625 | 3       |
+
+
+| test/contracts/Greeter.sol:Greeter contract |                 |      |        |      |         |
+|---------------------------------------------|-----------------|------|--------|------|---------|
+| Deployment Cost                             | Deployment Size |      |        |      |         |
+| 343595                                      | 2513            |      |        |      |         |
+| Function Name                               | min             | avg  | median | max  | # calls |
+| greet                                       | 1261            | 1261 | 1261   | 1261 | 3       |
+| greeting                                    | 1275            | 1275 | 1275   | 1275 | 2       |
+| setGreeting                                 | 737             | 4724 | 4182   | 8982 | 5       |
+
+
+| test/contracts/mock/ArbInbox.sol:ArbInbox contract |                 |      |        |      |         |
+|----------------------------------------------------|-----------------|------|--------|------|---------|
+| Deployment Cost                                    | Deployment Size |      |        |      |         |
+| 522756                                             | 2643            |      |        |      |         |
+| Function Name                                      | min             | avg  | median | max  | # calls |
+| createRetryableTicket                              | 1169            | 1169 | 1169   | 1169 | 1       |
+| generateRandomNumber                               | 443             | 443  | 443    | 443  | 1       |
+
+
+| test/fork/EthereumToPolygonFork.t.sol:EthereumToPolygonForkTest contract |                 |     |        |     |         |
+|--------------------------------------------------------------------------|-----------------|-----|--------|-----|---------|
+| Deployment Cost                                                          | Deployment Size |     |        |     |         |
+| 6556735                                                                  | 30248           |     |        |     |         |
+| Function Name                                                            | min             | avg | median | max | # calls |
+| setGreeting                                                              | 236             | 236 | 236    | 236 | 1       |
 ```
