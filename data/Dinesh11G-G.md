@@ -237,4 +237,42 @@ These issues could potentially allow attackers to manipulate the contract and ca
 #### Solution:
 Add checks to the relayCalls and processCalls functions to verify that the caller is the expected relay contract, and that the length of the _calls array and the _gasLimit and _maxSubmissionCost parameters are within reasonable limits. This will prevent attackers from using these functions to exhaust the gas limit of the contract or manipulate the state of the Arbitrum chain.
 
-Please let us know if you have any questions or need additional information.
+
+
+
+
+### Title: 
+Security issues in CrossChainRelayerOptimism contract
+
+### Description:
+At https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol
+
+The CrossChainRelayerOptimism contract has several potential security issues that need to be addressed.
+
+    The maxGasLimit parameter passed to the contract's constructor is not checked for validity. It is possible for an attacker to pass a very large gas limit, which could potentially lead to a denial of service attack if the contract runs out of gas when processing requests.
+
+    The relayCalls function accepts a _gasLimit parameter, but this parameter is not checked for validity. An attacker could potentially pass a very large gas limit, which could cause the contract to run out of gas when processing the request.
+
+    The setExecutor function does not check that the caller has the appropriate permissions before setting the executor address. This could potentially allow any caller to set the executor address, which could lead to security vulnerabilities if the caller is not authorized to do so.
+
+### Steps to reproduce:
+
+    Deploy the CrossChainRelayerOptimism contract on the blockchain.
+    Call the setExecutor function from any address to set the executor address.
+    Call the relayCalls function with a very large _gasLimit parameter.
+
+### Expected behavior:
+
+    The maxGasLimit parameter passed to the contract's constructor should be checked for validity and the contract should not accept a very large gas limit.
+    The relayCalls function should check the _gasLimit parameter for validity and should not accept a very large gas limit.
+    The setExecutor function should check that the caller has the appropriate permissions before setting the executor address.
+
+### Actual behavior:
+
+    The maxGasLimit parameter is not checked for validity and the contract accepts a very large gas limit.
+    The relayCalls function does not check the _gasLimit parameter for validity and accepts a very large gas limit.
+    The setExecutor function does not check that the caller has the appropriate permissions and allows any caller to set the executor address.
+
+### Impact:
+
+These security issues could potentially lead to a denial of service attack if an attacker is able to pass a very large gas limit to the contract, and could also allow unauthorized users to set the executor address, which could lead to further security vulnerabilities. It is recommended to address these issues before deploying the contract on the blockchain.
