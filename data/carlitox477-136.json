@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "carlitox477",
+  "risk": "2",
+  "title": "CrossChainRelayerArbitrum#relayCalls; CrossChainRelayerOptimism#relayCalls; CrossChainRelayerPolygon#relayCalls: accept ETH which seems will be stuck in the contract forever",
+  "issueId": 136,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/136"
+}
