@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "rvierdiiev",
+  "risk": "2",
+  "title": "EthereumToArbitrumRelayer.relayCalls and EthereumToArbitrumRelayer.processCalls are both payable",
+  "issueId": 133,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/133"
+}
