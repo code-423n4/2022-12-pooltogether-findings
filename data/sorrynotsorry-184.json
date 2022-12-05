@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "sorrynotsorry",
+  "risk": "2",
+  "title": "There is no function to change maxGasLimit incase of a hard fork",
+  "issueId": 184,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/184"
+}
