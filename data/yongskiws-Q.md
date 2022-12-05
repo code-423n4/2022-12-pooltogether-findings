@@ -14,7 +14,7 @@ The  uint256 `gasLimit` parameter is used to ensure that the relayer does not sp
 
 
 
-## `maxGasLimit` is not set in the function contract in case of future problems
+## function set `maxGasLimit` is not set in the contract in case of future problems
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L56-L62
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonRelayer.sol#L33-L40
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L38-L44
