@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "enckrish",
+  "risk": "2",
+  "title": "Funds may be lost if `processCalls` is called from a contract",
+  "issueId": 197,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/197"
+}
