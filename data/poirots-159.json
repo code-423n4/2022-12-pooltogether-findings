@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "poirots",
+  "risk": "2",
+  "title": "Current implementation may be vulnerable to griefing attacks",
+  "issueId": 159,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/159"
+}
