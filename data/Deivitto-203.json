@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Deivitto",
+  "risk": "3",
+  "title": "Value can be lost in payable functions",
+  "issueId": 203,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/203"
+}
