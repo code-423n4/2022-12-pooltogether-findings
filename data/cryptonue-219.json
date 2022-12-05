@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "cryptonue",
+  "risk": "3",
+  "title": "`EthereumToArbitrumRelayer` doesn't check `executor` address is already initialized when calling `processCalls` potential failure without revert",
+  "issueId": 219,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/219"
+}
