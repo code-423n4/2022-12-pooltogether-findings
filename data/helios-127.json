@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "helios",
+  "risk": "2",
+  "title": "Incorrect `_isAuthorized` function logic",
+  "issueId": 127,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/127"
+}
