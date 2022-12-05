@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Dinesh11G",
+  "risk": "2",
+  "title": "Potential security issues in CallLib solidity library",
+  "issueId": 161,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/161"
+}
