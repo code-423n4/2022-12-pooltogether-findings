@@ -211,6 +211,86 @@ Diff
  | setGreeting                                                              | 236             | 236 | 236    | 236 | 1       |
 ```
 
+# define named return variable to save gas
+instead of defining a local variable and returning it, you can save gas by defining the name in the returns definition.
+
+```solidity
+File: src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol
+108:   ) external payable returns (uint256 _ticketID) { // @audit define _ticketID as return var to save gas
+```
+
+Diff
+```git
+@@ -12,13 +12,13 @@
+ | src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol:CrossChainRelayerArbitrum contract |                 |       |        |       |         |
+ |----------------------------------------------------------------------------------------|-----------------|-------|--------|-------|---------|
+ | Deployment Cost                                                                        | Deployment Size |       |        |       |         |
+-| 487494                                                                                 | 2846            |       |        |       |         |
++| 487288                                                                                 | 2845            |       |        |       |         |
+ | Function Name                                                                          | min             | avg   | median | max   | # calls |
+ | executor                                                                               | 337             | 337   | 337    | 337   | 1       |
+ | getTxHash                                                                              | 1786            | 1786  | 1786   | 1786  | 4       |
+ | inbox                                                                                  | 282             | 282   | 282    | 282   | 1       |
+ | maxGasLimit                                                                            | 251             | 251   | 251    | 251   | 1       |
+-| processCalls                                                                           | 4034            | 6039  | 6039   | 8044  | 2       |
++| processCalls                                                                           | 4034            | 6038  | 6038   | 8042  | 2       |
+```
+
+# optimize state variable access
+Try to avoide accessing state variables multiple times per function.  
+For the nonce access, you can just use "uint256 _nonce = ++nonce;" - this will count up the state variable, and save gas.
+```solidity
+File: src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol
+78:     //nonce++;
+79: 
+80:     uint256 _nonce = ++nonce; // @audit dont access nonce multiple times
+
+File: src/ethereum-optimism/EthereumToOptimismRelayer.sol
+60:     //nonce++;
+61: 
+62:     uint256 _nonce = ++nonce; // @audit dont access nonce multiple times
+
+File: src/ethereum-polygon/EthereumToPolygonRelayer.sol
+56:     //nonce++;
+57: 
+58:     uint256 _nonce = ++nonce; // @audit dont access nonce multiple times
+
+```
+
+Diff
+```git
+@@ -19,7 +19,7 @@
+ | inbox                                                                                  | 282             | 282   | 282    | 282   | 1       |
+ | maxGasLimit                                                                            | 251             | 251   | 251    | 251   | 1       |
+ | processCalls                                                                           | 4034            | 6039  | 6039   | 8044  | 2       |
+-| relayCalls                                                                             | 561             | 34385 | 51298  | 51298 | 3       |
++| relayCalls                                                                             | 561             | 34319 | 51198  | 51198 | 3       |
+ | relayed                                                                                | 495             | 1495  | 1495   | 2495  | 2       |
+ | setExecutor                                                                            | 564             | 19474 | 22626  | 22626 | 7       |
+
+@@ -38,11 +38,11 @@
+ | src/ethereum-optimism/EthereumToOptimismRelayer.sol:CrossChainRelayerOptimism contract |                 |       |        |        |         |
+ |----------------------------------------------------------------------------------------|-----------------|-------|--------|--------|---------|
+ | Deployment Cost                                                                        | Deployment Size |       |        |        |         |
+-| 305313                                                                                 | 1935            |       |        |        |         |
++| 305713                                                                                 | 1937            |       |        |        |         |
+ | Function Name                                                                          | min             | avg   | median | max    | # calls |
+ | crossDomainMessenger                                                                   | 282             | 282   | 282    | 282    | 1       |
+ | executor                                                                               | 381             | 381   | 381    | 381    | 1       |
+-| relayCalls                                                                             | 490             | 67542 | 67542  | 134594 | 2       |
++| relayCalls                                                                             | 490             | 67496 | 67496  | 134503 | 2       |
+ | setExecutor                                                                            | 22603           | 22603 | 22603  | 22603  | 6       |
+
+
+@@ -66,7 +66,7 @@
+ | fxChildTunnel                                                                       | 337             | 337   | 337    | 337   | 1       |
+ | fxRoot                                                                              | 403             | 403   | 403    | 403   | 1       |
+ | maxGasLimit                                                                         | 229             | 229   | 229    | 229   | 1       |
+-| relayCalls                                                                          | 547             | 29545 | 29545  | 58544 | 2       |
++| relayCalls                                                                          | 547             | 29497 | 29497  | 58447 | 2       |
+ | setFxChildTunnel                                                                    | 22625           | 22625 | 22625  | 22625 | 3       |
+```
+
 # constants can be private
 If needed, the values can be read from the verified contract source code, or if there are multiple values there can be a single getter function that returns a tuple of the values of all currently-public constants. Saves 3406-3606 gas in deployment gas due to the compiler not having to create non-payable getter functions for deployment calldata, not having to store the bytes of the value outside of where it’s used, and not adding another entry to the method ID table.
 
