@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "AkshaySrivastav",
+  "risk": "3",
+  "title": "`CrossChainExecutor` contracts do not update the necessary states for failing transactions.",
+  "issueId": 166,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/166"
+}
