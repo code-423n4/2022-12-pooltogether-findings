@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "abiih",
+  "risk": "2",
+  "title": "Contract address variable is assigned without assigning any value to it.  ",
+  "issueId": 116,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/116"
+}
