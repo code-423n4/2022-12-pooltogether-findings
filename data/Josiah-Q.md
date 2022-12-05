@@ -172,3 +172,11 @@ Here are the 4 instances found.
 ```
   function setRelayer(ICrossChainRelayer _relayer) external {
 ```
+## MISSING SMART CONTRACT CHECKS
+The NatSpec of `setRelayer()` and `setExecuter()` says as follows:
+
+```
+   * @param _executor Address of the executor contract on the Arbitrum chain
+   * @param _relayer Address of the relayer contract on the Ethereum chain
+```
+It is recommended implementing a `extcodesize()` logic in the code block just to make sure the function argument inputs are indeed contract addresses instead of EOA addresses.
