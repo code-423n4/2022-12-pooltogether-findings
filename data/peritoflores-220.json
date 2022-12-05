@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "peritoflores",
+  "risk": "2",
+  "title": " [M1] `relayCalls` is not handling fees (msg.value)",
+  "issueId": 220,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/220"
+}
