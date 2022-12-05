@@ -276,3 +276,69 @@ The CrossChainRelayerOptimism contract has several potential security issues tha
 ### Impact:
 
 These security issues could potentially lead to a denial of service attack if an attacker is able to pass a very large gas limit to the contract, and could also allow unauthorized users to set the executor address, which could lead to further security vulnerabilities. It is recommended to address these issues before deploying the contract on the blockchain.
+
+
+
+
+## Title: 
+Potential security issues in CrossChainRelayerPolygon contract
+
+At https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonRelayer.sol
+
+Version: 0.8.16
+
+## Summary: 
+The CrossChainRelayerPolygon contract contains several potential security issues that could be exploited by malicious users.
+
+## Description:
+
+    The maxGasLimit variable is public and immutable, which means that it cannot be changed once the contract is deployed. This means that if the gas limit provided for free on Polygon changes, the contract will not be able to accommodate it.
+
+    The relayCalls() function allows a user to specify a _gasLimit parameter, but there is no limit on the size of this parameter. This means that a malicious user could potentially specify a very large gas limit, leading to gas exhaustion and potential denial of service attacks.
+
+    The _processMessageFromChild() function is marked as internal and does not do anything (it is a no-op). This means that if this contract is used to receive and execute messages from Polygon, it will not be able to process them.
+
+    The contract uses a nonce variable to uniquely identify each batch of calls, but this variable is not protected by a mutex or other synchronization mechanism. This means that if the contract receives multiple calls concurrently, it is possible for the calls to be processed out of order, leading to potential inconsistencies in the contract state.
+
+## Steps to reproduce:
+
+    Deploy the CrossChainRelayerPolygon contract on the Ethereum network.
+
+    Attempt to send a message from Ethereum to Polygon with a gas limit larger than the maxGasLimit specified in the contract constructor.
+
+    Observe that the transaction reverts with the error "GasLimitTooHigh".
+
+    Attempt to send multiple messages to the contract concurrently.
+
+    Observe that the messages may be processed out of order, leading to potential inconsistencies in the contract state.
+
+Expected result:
+
+    The contract should be able to accommodate changes in the gas limit provided for free on Polygon.
+
+    The relayCalls() function should enforce a maximum limit on the _gasLimit parameter to prevent potential denial of service attacks.
+
+    The _processMessageFromChild() function should be implemented to process messages from Polygon.
+
+    The contract should use a mutex or other synchronization mechanism to ensure that calls are processed in the correct order.
+
+Actual result:
+
+    The contract cannot accommodate changes in the gas limit provided for free on Polygon.
+
+    The relayCalls() function does not enforce a maximum limit on the _gasLimit parameter.
+
+    The _processMessageFromChild() function is a no-op and does not process messages from Polygon.
+
+    The contract does not use a mutex or other synchronization mechanism, which means that calls may be processed out of order.
+
+## Impact:
+
+    If the gas limit provided for free on Polygon changes, the contract will not be able to accommodate it.
+
+    A malicious user could potentially specify a very large gas limit in the relayCalls() function, leading to gas exhaustion and potential denial of service attacks.
+
+    If this contract is used to receive and execute messages from Polygon, it will not be able to process them.
+
+    If the contract receives multiple calls concurrently, it is possible for the calls to be processed out of order, leading to
+
