@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "Dinesh11G",
+  "risk": "2",
+  "title": "Unauthorized contract can set relayer address",
+  "issueId": 154,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/154"
+}
