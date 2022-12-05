@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "ktg",
+  "risk": "2",
+  "title": "EthereumToArbitrumRelayer processCalls may failed unexpectedly without proper warning due to lack of magic values handling logic.",
+  "issueId": 115,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/115"
+}
