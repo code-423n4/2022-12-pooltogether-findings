@@ -83,3 +83,35 @@ Here are the instances found.
 ```
   function _processMessageFromRoot(
 ```
+## COMMENT AND CODE MISMATCH
+The NatSpec of `setRelayer()` and `setExecuter()` says as follows:
+
+```
+   * @dev Will revert if it has already been set.
+```
+But according to the function logic, it reverts only when the zero address check fails. 
+
+It is recommended changing the comments or fixing the code block to its intended purpose.
+
+Here are the 4 instances found.
+
+[EthereumToArbitrumRelayer.sol#L139](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L139)
+
+```
+  function setExecutor(ICrossChainExecutor _executor) external {
+```
+[EthereumToArbitrumExecutor.sol#L52](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumExecutor.sol#L52)
+
+```
+  function setRelayer(ICrossChainRelayer _relayer) external {
+```
+[EthereumToOptimismRelayer.sol#L85](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L85)
+
+```
+  function setExecutor(ICrossChainExecutor _executor) external {
+```
+[EthereumToOptimismExecutor.sol#L66](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L66)
+
+```
+  function setRelayer(ICrossChainRelayer _relayer) external {
+```
