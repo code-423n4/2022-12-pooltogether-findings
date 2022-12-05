@@ -1,0 +1,8 @@
+{
+  "contest": 188,
+  "handle": "ladboy233",
+  "risk": "2",
+  "title": "Relayer request can be called before executor address or fxChildTunnel address is set",
+  "issueId": 158,
+  "issueUrl": "https://github.com/code-423n4/2022-12-pooltogether-findings/issues/158"
+}
