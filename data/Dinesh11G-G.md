@@ -207,3 +207,34 @@ ERC5164/script/helpers/DeployedContracts.sol::22 => string constant ARBITRUM_PAT
 ```
 #### Tools used
 Manual
+
+
+
+
+### Title: 
+Potential security issues with CrossChainRelayerArbitrum contract
+
+#### Description:
+The CrossChainRelayerArbitrum contract (located at [contract_address]) contains several potential security issues that could allow attackers to manipulate the contract and cause it to run out of gas or manipulate the state of the Arbitrum chain.
+
+#### Steps to reproduce:
+
+At https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L67    
+
+Call the relayCalls function from any contract or user, passing in a large array of calls and a high _gasLimit value.
+
+Expected result:
+The contract should check that the caller is the expected relay contract, and that the length of the _calls array and the _gasLimit parameter are within reasonable limits.
+
+Actual result:
+The contract does not check the caller or the length of the _calls array, and it does not check the _gasLimit parameter. This could allow attackers to exhaust the gas limit of the contract and cause it to run out of gas.
+
+Similar issues can be found in the processCalls function, where the caller and _calls array length are not checked, and the _maxSubmissionCost parameter is not checked.
+
+#### Impact:
+These issues could potentially allow attackers to manipulate the contract and cause it to run out of gas or manipulate the state of the Arbitrum chain.
+
+#### Solution:
+Add checks to the relayCalls and processCalls functions to verify that the caller is the expected relay contract, and that the length of the _calls array and the _gasLimit and _maxSubmissionCost parameters are within reasonable limits. This will prevent attackers from using these functions to exhaust the gas limit of the contract or manipulate the state of the Arbitrum chain.
+
+Please let us know if you have any questions or need additional information.
