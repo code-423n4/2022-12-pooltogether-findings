@@ -59,4 +59,20 @@ Affected Code:
 https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismExecutor.sol#L81
 
 
+## NONCE INCREMENT CAN BE INCLUDED IN UNCHECKED BLOCK
 
+### Description:
+
+In the relayer contracts the line where we increment the nonce can be marked as unchecked as it is practically impossible the number of batched calls
+exceed MAX.uint256.
+
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L78
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L60
+https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L60
+
+Do something like 
+```
+unchecked{
+ nonce++;
+ }
+```
