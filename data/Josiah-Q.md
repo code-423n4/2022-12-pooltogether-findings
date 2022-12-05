@@ -115,3 +115,35 @@ Here are the 4 instances found.
 ```
   function setRelayer(ICrossChainRelayer _relayer) external {
 ```
+## DOS ON UNBOUNDED LOOP
+Unbounded loop could lead to OOG (Out of Gas) denying the users of needed services. It is recommended setting a threshold for the array length if the array could grow to or entail an excessive size.
+
+Here is the 1 instance found.
+
+[CallLib.sol#L61](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/libraries/CallLib.sol#L61)
+
+```
+    for (uint256 _callIndex; _callIndex < _callsLength; _callIndex++) {
+```
+## BOUNDARY CHECKS
+It is recommended setting boundary limits on zero value checks that concern immutable variables at the constructor.
+
+This will avoid having extreme value as little as 1 or an infinitely large number assigned to the variables.
+
+Here are the 3 instances found.
+
+[EthereumToArbitrumRelayer.sol#L58](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-arbitrum/EthereumToArbitrumRelayer.sol#L58)
+
+```
+    require(_maxGasLimit > 0, "Relayer/max-gas-limit-gt-zero");
+```
+[EthereumToOptimismRelayer.sol#L40](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-optimism/EthereumToOptimismRelayer.sol#L40)
+
+```
+    require(_maxGasLimit > 0, "Relayer/max-gas-limit-gt-zero");
+```
+[EthereumToPolygonRelayer.sol#L38](https://github.com/pooltogether/ERC5164/blob/5647bd84f2a6d1a37f41394874d567e45a97bf48/src/ethereum-polygon/EthereumToPolygonRelayer.sol#L38)
+
+```
+    require(_maxGasLimit > 0, "Relayer/max-gas-limit-gt-zero");
+```
