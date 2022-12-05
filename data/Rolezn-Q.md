@@ -17,8 +17,10 @@ Total: 5 contexts over 3 issues
 | [NC&#x2011;3](#NC&#x2011;3) | Implementation contract may not be initialized | 5 |
 | [NC&#x2011;4](#NC&#x2011;4) | Non-usage of specific imports | 8 |
 | [NC&#x2011;5](#NC&#x2011;5) | Use `bytes.concat()` | 1 |
+| [NC&#x2011;6](#NC&#x2011;6) | Not all test cases pass | 6 |
 
-Total: 22 contexts over 5 issues
+
+Total: 28 contexts over 6 issues
 
 ## Low Risk Issues
 
@@ -317,4 +319,68 @@ https://github.com/pooltogether/ERC5164/tree/5647bd84f2a6d1a37f41394874d567e45a9
 Use `bytes.concat()` and upgrade to at least Solidity version 0.8.4 if required. 
 
 
+### <a href="#Summary">[NC&#x2011;6]</a><a name="NC&#x2011;6"> Not all test cases pass
+
+It is recommended to have all test cases pass to show that indeed the required tests successfully go through their tests
+
+#### <ins>Proof Of Concept</ins>
+
+```
+[⠢] Compiling...
+No files changed, compilation skipped
+
+Running 5 tests for test/unit/ethereum-arbitrum/EthereumToArbitrumExecutor.t.sol:CrossChainExecutorArbitrumUnitTest
+[PASS] testExecuteCalls() (gas: 105030)
+[PASS] testExecuteCallsAlreadyExecuted() (gas: 99358)
+[PASS] testExecuteCallsUnauthorized() (gas: 54324)
+[PASS] testSetRelayer() (gas: 30998)
+[PASS] testSetRelayerFail() (gas: 34092)
+Test result: ok. 5 passed; 0 failed; finished in 1.13ms
+
+Running 11 tests for test/unit/ethereum-arbitrum/EthereumToArbitrumRelayer.t.sol:CrossChainRelayerArbitrumUnitTest
+[PASS] testConstructor() (gas: 10676)
+[PASS] testConstructorInboxFail() (gas: 43666)
+[PASS] testConstructorMaxGasLimitFail() (gas: 43732)
+[PASS] testGetTxHash() (gas: 31657)
+[PASS] testGetTxHashFail() (gas: 33611)
+[PASS] testProcessCalls() (gas: 126866)
+[PASS] testProcessCallsFail() (gas: 61964)
+[PASS] testRelayCalls() (gas: 116375)
+[PASS] testRelayCallsFail() (gas: 65859)
+[PASS] testSetExecutor() (gas: 31039)
+[PASS] testSetExecutorFail() (gas: 34226)
+Test result: ok. 11 passed; 0 failed; finished in 1.23ms
+
+Running 8 tests for test/fork/EthereumToPolygonFork.t.sol:EthereumToPolygonForkTest
+[PASS] testCallFailure() (gas: 2728443)
+[PASS] testExecuteCalls() (gas: 2745831)
+[PASS] testExecutor() (gas: 2268462)
+[PASS] testGasLimitTooHigh() (gas: 2650615)
+[PASS] testGreeter() (gas: 914678)
+[FAIL. Reason: Log != expected log] testRelayCalls() (gas: 2686489)
+[PASS] testRelayer() (gas: 2270604)
+[PASS] testSetGreetingError() (gas: 2647030)
+Test result: FAILED. 7 passed; 1 failed; finished in 5.69s
+
+Running 8 tests for test/fork/EthereumToOptimismFork.t.sol:EthereumToOptimismForkTest
+[FAIL. Reason: Log != expected log] testExecuteCalls() (gas: 1307024)
+[PASS] testExecutor() (gas: 856681)
+[PASS] testGasLimitTooHigh() (gas: 1286303)
+[PASS] testGreeter() (gas: 869151)
+[PASS] testIsAuthorized() (gas: 1288413)
+[FAIL. Reason: Log != expected log] testRelayCalls() (gas: 1320360)
+[PASS] testRelayer() (gas: 856834)
+[PASS] testSetGreetingError() (gas: 1282745)
+Test result: FAILED. 6 passed; 2 failed; finished in 5.90s
+
+Failing tests:
+Encountered 2 failing tests in test/fork/EthereumToOptimismFork.t.sol:EthereumToOptimismForkTest
+[FAIL. Reason: Log != expected log] testExecuteCalls() (gas: 1307024)
+[FAIL. Reason: Log != expected log] testRelayCalls() (gas: 1320360)
+
+Encountered 1 failing test in test/fork/EthereumToPolygonFork.t.sol:EthereumToPolygonForkTest
+[FAIL. Reason: Log != expected log] testRelayCalls() (gas: 2686489)
+
+Encountered a total of 3 failing tests, 29 tests succeeded
+```
 
