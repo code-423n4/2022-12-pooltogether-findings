@@ -37,7 +37,7 @@ This is applicable to all the in-scope smart contracts
 
 It's a best practice to use the latest compiler version.
 
-The specified minimum compiler version is quite old. Older compilers might be susceptible to some bugs. We recommend changing the solidity version pragma to the latest version to enforce the use of an up to date compiler.
+We recommend changing the solidity version pragma to the latest version to enforce the use of an up to date compiler.
 
 List of known compiler bugs and their severity can be found here: https://etherscan.io/solcbuginfo
 
