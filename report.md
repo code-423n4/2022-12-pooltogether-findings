@@ -1,3 +1,11 @@
+---
+sponsor: "PoolTogether"
+slug: "2022-12-pooltogether"
+date: "2023-01-20"
+title: "PoolTogether contest"
+findings: "https://github.com/code-423n4/2022-12-pooltogether-findings/issues"
+contest: 188
+---
 
 # Overview
 
